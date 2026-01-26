@@ -1,0 +1,1 @@
+# Encuentra los archivos y obtiene metadatos
