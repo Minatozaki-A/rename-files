@@ -5,23 +5,27 @@ import re
 import hashlib as hashl
 import shutil
 
-
-
 def clean_name(path_file : Path):
     if not path_file.exists():
         raise FileNotFoundError(f"Not exists the file {path_file.name}")
 
-    name = path_file.stem
+    name = path_file.stem.lower()
     ext = path_file.suffix.lower()
 
-    clean = udd.normalize('NFKD', name)
-    clean = clean.encode('ascii', 'ignore').decode('ascii')
+    clean = udd.normalize('NFD', name)
+    clean = udd.normalize( 'NFC', clean)
 
-    clean = re.sub(r'[^\w\s]', ' ', clean)
+    without_accents = "".join(
+        c for c in clean if udd.category(c) != 'Mn'
+    )
+
+    clean = re.sub(r'[^\w\s]', ' ', without_accents)
+
     clean = re.sub(r'\s+', ' ', clean).lower().strip()
-    final_name = re.sub(r'_+', '_', clean.replace(" ", "_"))
 
+    final_name = re.sub(r'_+', '_', clean.replace(" ", "_"))
     return f"{final_name}{ext}"
+
 
 def rename(path_directory : Path, new_name : str):
     if  not path_directory.exists():
@@ -68,7 +72,3 @@ def move_file(path_file : Path, path_destination : Path):
 
         final_destination = rename(path_destination, path_file.name)
         shutil.move(path_file, final_destination)
-
-
-home = Path.home()
-show_files(home/"Downloads")
