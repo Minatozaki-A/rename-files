@@ -6,9 +6,6 @@ import hashlib as hashl
 import shutil
 
 def clean_name(path_file : Path):
-    if not path_file.exists():
-        raise FileNotFoundError(f"Not exists the file {path_file.name}")
-
     name = path_file.stem.lower()
     ext = path_file.suffix.lower()
 
@@ -27,10 +24,9 @@ def clean_name(path_file : Path):
     return f"{final_name}{ext}"
 
 
-def rename(path_directory : Path, new_name : str):
-    if  not path_directory.exists():
-        raise IsADirectoryError()
-
+def rename(path_file : Path ):
+    new_name = clean_name(path_file)
+    path_directory = path_file.parent
     final_name = path_directory / new_name
 
     if final_name.exists():
@@ -48,9 +44,6 @@ def rename(path_directory : Path, new_name : str):
     return final_name
 
 def show_files(path_directory : Path, depth: int = 0):
-    if not path_directory.exists():
-        raise FileNotFoundError(f"Not exists the directory {path_directory.name}")
-
     indent = "  " * depth
     print(f"{indent}[{path_directory.name}]")
 
@@ -70,5 +63,4 @@ def move_file(path_file : Path, path_destination : Path):
         if not path_file.exists():
             raise FileNotFoundError(f"Not exists the file {path_file.name}")
 
-        final_destination = rename(path_destination, path_file.name)
-        shutil.move(path_file, final_destination)
+        shutil.move(path_file, path_destination)
