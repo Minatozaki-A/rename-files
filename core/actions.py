@@ -2,7 +2,8 @@
 import unicodedata as udd
 from pathlib import Path
 import re
-import hashlib as hashl
+import hashlib as hlib
+import psutil
 
 
 def clean_name(name : str):
