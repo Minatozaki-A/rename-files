@@ -34,7 +34,7 @@ def clean_directory_name(filename: Path):
     cleaned_title = clean_name(title)
     return cleaned_title
 
-def rename(path_file : Path ):
+def rename_file(path_file : Path ):
     new_name = clean_file_name(path_file)
     path_directory = path_file.parent
     final_name = path_directory / new_name
