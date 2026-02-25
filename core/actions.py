@@ -53,6 +53,15 @@ def rename_file(path_file : Path ):
     return final_name
 
 
+def find_ssd_mount():
+    for part in psutil.disk_partitions():
+        if '/media' in part.mountpoint or '/run/media' in part.mountpoint:
+            print(f"Name: {part.device}")
+            print(f"Mountpoint: {part.mountpoint}")
+            print(f"File System: {part.fstype}")
+            return part.mountpoint
+    return None
+
 def show_files(path_directory : Path, depth: int = 0):
     indent = "  " * depth
     print(f"{indent}[{path_directory.name}]")
