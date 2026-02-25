@@ -45,7 +45,7 @@ def rename_file(path_file : Path ):
         candidate = path_directory / f"{stem}_1{suffix}"
 
         if candidate.exists():
-            hash_suffix = hashl.md5(str(final_name).encode()).hexdigest()[:8]
+            hash_suffix = hlib.md5(str(final_name).encode()).hexdigest()[:8]
             candidate = path_directory / f"{stem}_{hash_suffix}{suffix}"
 
         final_name = candidate
