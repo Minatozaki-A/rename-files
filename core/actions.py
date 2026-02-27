@@ -5,6 +5,15 @@ import psutil
 from core.config_loader import get_cached_config_value
 from utils.text_utils import clean_file_name, clean_directory_name
 
+def find_ssd_mount():
+    for part in psutil.disk_partitions():
+        if '/media' in part.mountpoint or '/run/media' in part.mountpoint:
+            print(f"Name: {part.device}")
+            print(f"Mountpoint: {part.mountpoint}")
+            print(f"File System: {part.fstype}")
+            return Path(part.mountpoint)
+    return None
+
 def rename_file(path_file : Path ):
     new_name = clean_file_name(path_file)
     path_directory = path_file.parent
