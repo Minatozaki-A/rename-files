@@ -17,7 +17,7 @@ def scanner(path_directory: Path, config_path: Path = None):
 
     # Construir la estructura empezando por el directorio raíz
     final_structure = {
-        path_directory.name: build_directory_tree(path_directory, ignore_dir)
+        clean_directory_name(path_directory): build_directory_tree(path_directory, ignore_dir)
     }
 
     # Guardar en config.json
