@@ -23,8 +23,8 @@ def clean_file_name(path_file : Path):
 
     return f"{final_name}{ext}"
 
-def clean_directory_name(filename: Path):
-    name = filename.stem
+def clean_directory_name(path_dir: Path):
+    name = path_dir.stem
     title = re.sub(r'^[\d\s-]+|[\d\s-]+', '', name,
                 flags=re.IGNORECASE).strip()
     cleaned_title = clean_name(title)
