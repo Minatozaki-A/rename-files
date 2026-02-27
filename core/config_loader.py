@@ -26,7 +26,6 @@ def build_directory_tree(path_dir: Path, ignore_list: list) -> dict:
                 tree[item.name] = build_directory_tree(item, ignore_list)
             if item.is_file():
                 # Si es un archivo, asignamos None o un string vacío.
-                # Si solo quieres directorios en tu JSON, elimina este bloque elif.
                 tree[item.name] = None
     except PermissionError:
         # Prevención de bloqueos al escanear carpetas del sistema sin permisos
