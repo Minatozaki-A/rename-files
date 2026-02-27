@@ -2,15 +2,36 @@
 import datetime
 from pathlib import  Path
 
-def get_size(path_file : Path):
-    return path_file.stat().st_size
+def get_change_time(last_change: float):
+    return datetime.datetime.fromtimestamp(last_change)
 
-def get_modification_time(path_file : Path):
-    return datetime.datetime.fromtimestamp(
-        path_file.stat().st_mtime
-    )
+def format_size(size_bytes: int) -> str:
+    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+        if size_bytes < 1024:
+            return f"{size_bytes:.2f} {unit}"
+        size_bytes /= 1024
+    return f"{size_bytes:.2f} PB"
 
-def get_change_time(path_file : Path):
-    return datetime.datetime.fromtimestamp(
-        path_file.stat().st_ctime
-    )
+def get_directory_stats(path_directory: Path):
+    """
+    Calcula estadísticas generales de un directorio:
+    tamaño total, número de archivos y la fecha de la última modificación.
+    """
+    total_size = 0
+    file_count = 0
+    last_mod = 0.0
+
+    # Iteramos solo sobre archivos para el reporte de peso
+    for item in path_directory.rglob('*'):
+        if item.is_file():
+            stats = item.stat()
+            total_size += stats.st_size
+            file_count += 1
+            if stats.st_mtime > last_mod:
+                last_mod = stats.st_mtime
+
+    return {
+        "total_size": format_size(total_size),
+        "file_count": file_count,
+        "last_modified": get_change_time(last_mod) if last_mod > 0 else "N/A"
+    }
