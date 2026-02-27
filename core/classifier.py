@@ -1,1 +1,0 @@
-# Decide a dónde va cada archivo

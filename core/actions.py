@@ -1,38 +1,9 @@
 # Mueve, renombra y lista archivos
-import unicodedata as udd
 from pathlib import Path
-import re
 import hashlib as hlib
 import psutil
-
-
-def clean_name(name : str):
-    clean = udd.normalize('NFD', name)
-
-    without_accents = "".join(
-        c for c in clean if udd.category(c) != 'Mn'
-    )
-
-    clean = re.sub(r'[^\w\s]', ' ', without_accents)
-    clean = re.sub(r'\s+', ' ', clean).lower().strip()
-    final_name = re.sub(r'[\s_-]+', '-', clean)
-    # re.sub(r'-+', '-', clean.replace(" ", "-").replace("_", "-"))
-    return final_name
-
-def clean_file_name(path_file : Path):
-    name = path_file.stem.lower()
-    ext = path_file.suffix.lower()
-
-    final_name = clean_name(name)
-
-    return f"{final_name}{ext}"
-
-def clean_directory_name(filename: Path):
-    name = filename.stem
-    title = re.sub(r'^[\d\s-]+|[\d\s-]+\.pdf$', '', name,
-                flags=re.IGNORECASE).strip()
-    cleaned_title = clean_name(title)
-    return cleaned_title
+from core.config_loader import get_cached_config_value
+from utils.text_utils import clean_file_name, clean_directory_name
 
 def rename_file(path_file : Path ):
     new_name = clean_file_name(path_file)
@@ -42,16 +13,14 @@ def rename_file(path_file : Path ):
     if final_name.exists():
         stem = final_name.stem
         suffix = final_name.suffix
-        candidate = path_directory / f"{stem}_1{suffix}"
 
-        if candidate.exists():
-            hash_suffix = hlib.md5(str(final_name).encode()).hexdigest()[:8]
-            candidate = path_directory / f"{stem}_{hash_suffix}{suffix}"
+        hash_suffix = hlib.md5(str(final_name).encode()).hexdigest()[:8]
+
+        candidate = path_directory / f"{stem}_{hash_suffix}{suffix}"
 
         final_name = candidate
 
     return final_name
-
 
 def find_ssd_mount():
     for part in psutil.disk_partitions():
@@ -59,17 +28,27 @@ def find_ssd_mount():
             print(f"Name: {part.device}")
             print(f"Mountpoint: {part.mountpoint}")
             print(f"File System: {part.fstype}")
-            return part.mountpoint
+            return Path(part.mountpoint)
     return None
 
-def show_files(path_directory : Path, depth: int = 0):
+def show_files(path_directory, config_path: Path, depth: int = 0):
     indent = "  " * depth
-    print(f"{indent}[{path_directory.name}]")
+    ignore_dir = []
+
+    if config_path:
+        cached_ignore = get_cached_config_value(config_path, "ignore")
+        if cached_ignore:
+            ignore_dir = cached_ignore
+
+    print(f"{indent}[{clean_directory_name(path_directory)}]")
 
     for item in sorted(path_directory.iterdir()):
         if item.is_dir():
-            show_files(item, depth + 1)
-        if item.is_file():
+            if item.name in ignore_dir:
+                continue
+            show_files(item, config_path, depth + 1)
+
+        elif item.is_file():
             new_name = clean_file_name(item)
             changed = item.name != new_name
             marker = f"-> {new_name}" if changed else ""
