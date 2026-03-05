@@ -18,7 +18,7 @@ def scanner_structure_directories(path_directory: Path, config_path: Path = None
     # Construir la estructura empezando por el directorio raíz
     path_directory_normalize = Path(str(path_directory).rstrip('/'))
     final_structure = {
-        clean_directory_name(path_directory_normalize): build_directory_tree(path_directory, ignore_dir)
+        path_directory_normalize: build_directory_tree(path_directory, ignore_dir)
     }
 
     # Guardar en config.json
