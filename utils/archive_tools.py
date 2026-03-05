@@ -2,13 +2,24 @@
 import zipfile
 from pathlib import Path
 
-def show_zip_content(zip_file: Path):
+
+def get_zip_info(zip_file: Path):
+    """Retorna una lista con la información de los archivos en lugar de solo imprimir."""
+    if not zip_file.exists():
+        raise FileNotFoundError(f"No se encuentra el archivo: {zip_file}")
+
     with zipfile.ZipFile(zip_file, 'r') as zip_ref:
-        zip_ref.printdir()
+
+        return zip_ref.infolist()
+
 
 def extract_zip(zip_file: Path, path_destination: Path):
-    if not path_destination.exists():
-        raise FileNotFoundError(f"Not exists the directory {path_destination.name}")
+    if not zip_file.exists():
+        raise FileNotFoundError(f"El archivo origen no existe: {zip_file}")
+
+    if not path_destination.is_dir():
+        raise ValueError(f"El destino debe ser un directorio: {path_destination}")
+
     if not zipfile.is_zipfile(zip_file):
         raise ValueError(f"{zip_file.name} is not a zip file")
     try:
