@@ -25,4 +25,3 @@ def scanner_structure_directories(path_directory: Path, config_path: Path = None
     if config_path:
         save_structure_to_config(structure_path, final_structure)
 
-    return final_structure
