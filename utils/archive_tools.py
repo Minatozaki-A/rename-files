@@ -21,14 +21,21 @@ def extract_zip(zip_file: Path, path_destination: Path):
         raise ValueError(f"El destino debe ser un directorio: {path_destination}")
 
     if not zipfile.is_zipfile(zip_file):
-        raise ValueError(f"{zip_file.name} is not a zip file")
+        raise ValueError(f"{zip_file.name} no es un archivo ZIP válido")
+
     try:
         with zipfile.ZipFile(zip_file, 'r') as zip_ref:
-            for member in zip_ref.namelist():
-                if '..' in member or member.startswith('/'):
-                    raise ValueError(f"Path traversal attempt in {zip_file.name}: {member}")
-            zip_ref.extractall(path_destination)
-    except zipfile.BadZipFile:
-        raise ValueError(f"{zip_file.name} is not a valid zip file")
+            destination_abs = path_destination.resolve()
 
+            for member in zip_ref.namelist():
+                # Forma más robusta de prevenir Path Traversal usando resolve()
+                target_path = (path_destination / member).resolve()
+
+                if not str(target_path).startswith(str(destination_abs)):
+                    raise ValueError(f"Intento de Path Traversal detectado en: {member}")
+
+            zip_ref.extractall(path_destination)
+
+    except zipfile.BadZipFile:
+        raise ValueError(f"El archivo {zip_file.name} está corrupto o no es un ZIP")
 
