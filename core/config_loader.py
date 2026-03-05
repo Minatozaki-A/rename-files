@@ -24,7 +24,7 @@ def build_directory_tree(path_dir: Path, ignore_list: list) -> dict:
             if item.is_dir():
                 # Si es un directorio, su valor es el resultado de explorarlo por dentro (recursión)
                 tree[item.name] = build_directory_tree(item, ignore_list)
-            if item.is_file():
+            elif item.is_file():
                 # Si es un archivo, asignamos None o un string vacío.
                 tree[item.name] = None
     except PermissionError:
