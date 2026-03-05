@@ -3,7 +3,7 @@ import re
 from pathlib import Path
 
 def clean_name(name : str):
-    clean = udd.normalize('NFD', name)
+    clean = udd.normalize('NFKD', name)
 
     without_accents = "".join(
         c for c in clean if udd.category(c) != 'Mn'
