@@ -16,7 +16,7 @@ def clean_name(name : str):
     return final_name
 
 def clean_file_name(path_file : Path):
-    name = path_file.stem.lower()
+    name = path_file.stem
     ext = path_file.suffix.lower()
 
     final_name = clean_name(name)
