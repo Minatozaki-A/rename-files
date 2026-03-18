@@ -1,6 +1,4 @@
-# Mueve, renombra y lista archivos
 from pathlib import Path
-# import hashlib as hlib
 import psutil
 from core.config_loader import get_cached_config_value
 from utils.text_utils import clean_file_name, clean_directory_name
@@ -30,8 +28,6 @@ def resolve_name_file(path_file : Path):
     name = Path(new_name).stem
     suffix = Path(new_name).suffix
     counter = 1
-
-    # hash_suffix = hlib.md5(str(final_name).encode()).hexdigest()[:8]
 
     while True:
         candidate = path_file.parent / f"{name}_({counter}){suffix}"
