@@ -46,23 +46,48 @@ def resolve_name_directory(path_dir: Path):
 
     final_name = path_dir.parent / new_name
 
-    if final_name.exists():
+    if  final_name.exists():
         raise FileExistsError(f"Directory already exists: {final_name}")
 
     return final_name
 
 
+def get_name_files(source_path, config_path : Path, ignore_dir : list = None):
+    if ignore_dir is None and config_path:
+        ignore_dir = get_cached_config_value(config_path, "ignore") or []
+    elif ignore_dir is None:
+        ignore_dir = []
+
+    name_files = []
+    for item in sorted(source_path.iterdir()):
+        if item.is_dir():
+            if item.name in ignore_dir:
+                continue
+            name_files.extend(get_name_directories(item, config_path, ignore_dir))
+        elif item.is_file():
+            name_files.append(item)
+    return name_files
+
+def get_name_directories(source_path, config_path : Path, ignore_dir : list = None):
+    if ignore_dir is None and config_path:
+        ignore_dir = get_cached_config_value(config_path, "ignore") or []
+    elif ignore_dir is None:
+        ignore_dir = []
+
+    name_directories = []
+    for item in sorted(source_path.iterdir()):
+        if item.is_dir():
+            if item.name in ignore_dir:
+                continue
+            name_directories.append(item)
+            name_directories.extend(get_name_directories(item, config_path, ignore_dir))
+    return name_directories
+
 
 
 def show_files(path_directory, config_path: Path, depth: int = 0, ignore_dir: list = None):
     indent = "  " * depth
-    """ ignore_dir = []
 
-    if config_path:
-        cached_ignore = get_cached_config_value(config_path, "ignore")
-        if cached_ignore:
-            ignore_dir = cached_ignore
-"""
     if ignore_dir is None and config_path:
         ignore_dir = get_cached_config_value(config_path, "ignore") or []
     elif ignore_dir is None:
