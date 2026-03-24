@@ -17,7 +17,7 @@ def resolve_name_file(path_file : Path):
     if not new_name:
         raise ValueError(f"new name is empty: {path_file}")
 
-    if new_name == path_file.name:
+    if Path(new_name).stem == path_file.stem:
         return None
 
     final_name = path_file.parent / new_name
