@@ -93,12 +93,12 @@ def get_name_directories(source_path, config_path : Path, ignore_dir : list = No
 
 def show_files(path_directory, config_path: Path, depth: int = 0, ignore_dir: list = None):
     indent = "  " * depth
-
-    if ignore_dir is None and config_path:
+    ignore_dir = _resolve_config(config_path, ignore_dir)
+    """if ignore_dir is None and config_path:
         ignore_dir = get_cached_config_value(config_path, "ignore") or []
     elif ignore_dir is None:
         ignore_dir = []
-    print(f"{indent}[{clean_directory_name(path_directory)}]")
+    print(f"{indent}[{clean_directory_name(path_directory)}]")"""
 
     for item in sorted(path_directory.iterdir()):
         if item.is_dir():
