@@ -3,6 +3,14 @@ import psutil
 from core.config_loader import get_cached_config_value
 from utils.text_utils import clean_file_name, clean_directory_name
 
+def _resolve_config(config_path: Path, key_config: str , config_value: list | None) -> list:
+    if config_value is not None:
+        return config_value
+    if config_path:
+        return get_cached_config_value(config_path, key_config) or []
+    return []
+
+
 def find_ssd_mount():
     for part in psutil.disk_partitions():
         if '/media' in part.mountpoint or '/run/media' in part.mountpoint:
