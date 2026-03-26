@@ -70,12 +70,15 @@ def resolve_name_directory(path_dir: Path):
 
     return temp_final
 
+def organize_for_depth_and_alphabetical(list_items: list):
+    return sorted(list_items, key=lambda part: (-len(part.parts), part))
+
 
 def get_name_files(source_path, config_path : Path, key: str, ignore_dir : list = None):
 
     ignore_dir = _resolve_config(config_path, key, ignore_dir)
     name_files = []
-    for item in sorted(source_path.iterdir()):
+    for item in source_path.iterdir():
         if item.is_dir():
             if item.name in ignore_dir:
                 continue
@@ -89,7 +92,7 @@ def get_name_directories(source_path, config_path : Path, key: str,ignore_dir : 
 
     ignore_dir = _resolve_config(config_path, key, ignore_dir)
     name_directories = []
-    for item in sorted(source_path.iterdir()):
+    for item in source_path.iterdir():
         if item.is_dir():
             if item.name in ignore_dir:
                 continue
