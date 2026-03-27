@@ -13,12 +13,13 @@ def _resolve_config(config_path: Path, key_config: str,
     return []
 
 
-def find_ssd_mount(label_ssd: str = None):
+def find_ssd_mount_point(label_ssd: str = None):
     if not label_ssd:
         raise ValueError("label_ssd is empty")
 
     for part in psutil.disk_partitions():
-        if 'mnt/'  in part.mountpoint and label_ssd in part.mountpoint:
+        mount_point = part.mountpoint.rstrip('/')
+        if mount_point.endswith(label_ssd):
             print(f"Name: {part.device}")
             print(f"Mountpoint: {part.mountpoint}")
             print(f"File System: {part.fstype}")
