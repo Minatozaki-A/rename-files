@@ -6,14 +6,23 @@ _CONFIG_CACHE: Dict[str, Dict] = {}
 
 def get_cached_config_value(config_path: Path, key: str):
     path_str = str(config_path)
+
     if path_str not in _CONFIG_CACHE:
+        if not config_path.exists():
+            _CONFIG_CACHE[path_str] = {}  # Evita re-intentar si no existe
+            return None
+    try:
         with open(config_path, 'r', encoding='utf-8') as f:
             _CONFIG_CACHE[path_str] = json.load(f)
+
+    except (json.JSONDecodeError, PermissionError):
+        _CONFIG_CACHE[path_str] = {}
+
     return _CONFIG_CACHE[path_str].get(key)
 
 
 def build_directory_tree(path_dir: Path, ignore_list: list) -> dict:
-    """Función recursiva para construir el diccionario de directorios."""
+    """Función recursiva para construir el diccionario de di and item.name not in ignore_dirrectorios."""
     tree = {}
     try:
         # Se itera sobre el contenido del directorio actual
