@@ -16,7 +16,7 @@ def find_ssd_mount(label_ssd: str = None):
         raise ValueError("label_ssd is empty")
 
     for part in psutil.disk_partitions():
-        if 'mnt/'  in part.mountpoint and label_ssd in part.mountpoint: #'mnt/' in part.mountpoint or
+        if 'mnt/'  in part.mountpoint and label_ssd in part.mountpoint:
             print(f"Name: {part.device}")
             print(f"Mountpoint: {part.mountpoint}")
             print(f"File System: {part.fstype}")
