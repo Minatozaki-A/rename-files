@@ -76,38 +76,45 @@ def resolve_name_directory(path_dir: Path):
 
     return temp_final
 
-def organize_for_depth_and_alphabetical(list_items: list):
-    return sorted(list_items, key=lambda part: (-len(part.parts), part))
+def organize_for_depth_and_alphabetical(list_items):
+    return sorted(list(list_items), key=lambda part: (-len(part.parts), part))
 
 
-def get_name_files(source_path, config_path : Path, key: str, ignore_dir : list = None):
+def get_name_files(source_path: Path, config_path: Path,
+                key: str, config_value: list = None):
 
-    ignore_dir = _resolve_config(config_path, key, ignore_dir)
-    name_files = []
+    ignore_dir = _resolve_config(config_path, key, config_value)
+
     for item in source_path.iterdir():
         if item.is_dir():
             if item.name in ignore_dir:
                 continue
-            name_files.extend(get_name_files(item, config_path, key, ignore_dir))
+
+            yield from get_name_files(item, config_path,
+                                    key, ignore_dir)
+
         elif item.is_file():
-            name_files.append(item)
-    return name_files
+            yield item
 
 
-def get_name_directories(source_path, config_path : Path, key: str,ignore_dir : list = None):
+def get_name_directories(source_path: Path, config_path: Path,
+                        key: str, config_value: list):
 
-    ignore_dir = _resolve_config(config_path, key, ignore_dir)
-    name_directories = []
+    ignore_dir = _resolve_config(config_path,
+                                key, config_value)
+
     for item in source_path.iterdir():
         if item.is_dir():
             if item.name in ignore_dir:
                 continue
-            name_directories.append(item)
-            name_directories.extend(get_name_directories(item, config_path, key, ignore_dir))
-    return name_directories
+
+            yield item
+
+            yield from get_name_directories(item, config_path,
+                                            key, ignore_dir)
 
 
-
+"""
 def show_files(path_directory, config_path: Path, key: str, depth: int = 0, ignore_dir: list = None):
     indent = "  " * depth
     ignore_dir = _resolve_config(config_path, key, ignore_dir)
