@@ -27,19 +27,21 @@ def find_ssd_mount_point(label_ssd: str = None):
     return None
 
 
-def resolve_name_file(path_file : Path):
+def resolve_name_file(path_file: Path) -> Path:
     new_name = clean_file_name(path_file)
     if not new_name:
         raise ValueError(f"new name is empty: {path_file}")
 
     final_name = path_file.parent / new_name
-    name = final_name.stem
-    suffix = final_name.suffix
+    name, suffix = final_name.stem, final_name.suffix
 
-    if  name == path_file.stem and suffix == path_file.suffix.lower():
+    if  final_name.name == path_file.name:
         return final_name
 
     if final_name.exists() and final_name.samefile(path_file):
+        return final_name
+
+    if not final_name.exists():
         return final_name
 
     counter = 1
