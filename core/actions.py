@@ -112,21 +112,3 @@ def get_name_directories(source_path: Path, config_path: Path,
 
             yield from get_name_directories(item, config_path,
                                             key, ignore_dir)
-
-
-"""
-def show_files(path_directory, config_path: Path, key: str, depth: int = 0, ignore_dir: list = None):
-    indent = "  " * depth
-    ignore_dir = _resolve_config(config_path, key, ignore_dir)
-
-    for item in sorted(path_directory.iterdir()):
-        if item.is_dir():
-            if item.name in ignore_dir:
-                continue
-            show_files(item, config_path, key, depth + 1)
-
-        elif item.is_file():
-            new_name = clean_file_name(item)
-            changed = item.name != new_name
-            marker = f"-> {new_name}" if changed else ""
-            print(f"{indent}  {item.name} {marker}")
