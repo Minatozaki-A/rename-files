@@ -79,7 +79,7 @@ def resolve_name_directory(path_dir: Path):
 
     return temp_final
 
-def organize_for_depth_and_alphabetical(list_items):
+def organize_for_depth_and_alphabetical(list_items)-> list:
     return sorted(list(list_items), key=lambda part: (-len(part.parts), part))
 
 
