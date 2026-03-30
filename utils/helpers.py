@@ -13,10 +13,6 @@ def format_size(size_bytes: int) -> str:
     return f"{size_bytes:.2f} PB"
 
 def get_directory_stats(path_directory: Path):
-    """
-    Calcula estadísticas generales de un directorio:
-    tamaño total, número de archivos y la fecha de la última modificación.
-    """
     total_size = 0
     file_count = 0
     last_mod = 0.0
