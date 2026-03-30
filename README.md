@@ -1,34 +1,44 @@
-# File-Rename
+# File Organizer & Scanner
 
-Este script de automatización organiza el directorio de descargas del usuario de forma eficiente, clasificando los archivos en carpetas específicas según su tipo y gestionando posibles duplicados.
+Este proyecto es una herramienta para el escaneo, renombrado seguro de archivos y directorios, y la generación de estructuras en formato JSON. Su enfoque principal es la manipulación de nombres evitando colisiones y el soporte para identificar puntos de montaje en discos SSD.
 
-## Características principales
+## Características Principales
 
-* **Categorización automática:** Clasifica archivos en grupos como Imágenes, Videos, Documentos y más,
-* basándose en una lista predefinida de extensiones.
+*   **Renombrado Seguro y Limpieza:**
+    *   `resolve_name_file` y `resolve_name_directory`: Renombra archivos y carpetas eliminando caracteres especiales, tildes (usando normalización Unicode) y espacios extra, convirtiéndolos en formatos uniformes (en minúsculas, separados por guiones).
+    *   Gestión automática de colisiones agregando sufijos numéricos (ej: `nombre-(1).txt`) para evitar sobrescribir archivos existentes.
+*   **Escaneo y Generación de Estructuras (JSON):**
+    *   Escanea de forma recursiva un directorio y genera una representación en árbol (diccionario) de toda su estructura.
+    *   Soporte para listas de exclusión (ignorar ciertas carpetas) cargadas desde un archivo de configuración JSON.
+    *   Cacheo de configuraciones (`config_loader.py`) para optimizar múltiples accesos de lectura.
+    *   Guardado automático de la estructura escaneada en un archivo de configuración (`save_structure_to_config`).
+*   **Soporte de Almacenamiento SSD:**
+    *   `find_ssd_mount_point`: Utiliza la librería `psutil` para encontrar puntos de montaje específicos en discos basándose en etiquetas SSD.
 
-## Detalles Técnicos
+## Arquitectura y Entorno
 
-El desarrollo se centra en el uso de librerías estándar de Python para mantener el script ligero y compatible:
+Este proyecto ha sido desarrollado con los siguientes requisitos en mente:
 
-1. **Pathlib:** Se utiliza para la manipulación de rutas de archivos mediante objetos, garantizando que el script funcione correctamente tanto en sistemas basados en Unix como en Windows.
-2. **Shutil:** Se emplea para realizar las operaciones de movimiento de archivos entre directorios de forma segura.
+*   **Python >= 3.13:** Utiliza las características más recientes de Python.
+*   **Gestor de Paquetes `uv`:** Las dependencias del proyecto se gestionan de manera ultrarrápida utilizando `uv`.
+*   **Librerías Estándar:** Se prioriza el uso de la biblioteca estándar, especialmente `pathlib` (para manejo avanzado de rutas multiplataforma) y `json` (para las estructuras de directorios y configuración).
+*   **`psutil`:** La única dependencia externa requerida (`psutil>=7.2.2`) utilizada para la enumeración de particiones y puntos de montaje.
+*   **Optimizado para Btrfs:** Este proyecto fue hecho y se ha probado exclusivamente en el sistema de archivos Btrfs para aprovechar sus características únicas.
 
-## Requisitos
+## Instalación y Uso
 
-* Python 3.6 o superior.
-* No se requieren dependencias externas adicionales.
+1.  **Requisitos:**
+    *   Tener instalado Python 3.13 o superior.
+    *   Tener instalado `uv` en el sistema.
 
-## Instalación y uso
+2.  **Instalar dependencias:**
+    Clona el repositorio y, dentro del directorio raíz, ejecuta:
+    ```bash
+    uv sync
+    ```
 
-1. Clonar este repositorio.
-2. Ejecutar el script principal:
-   ```bash
-   python main.py
-
-
-
-
-
-
-   
+3.  **Ejecutar el proyecto:**
+    Dependiendo de cómo esté estructurado el punto de entrada principal (actualmente en construcción en `main.py`), puedes ejecutarlo directamente usando `uv`:
+    ```bash
+    uv run main.py
+    ```
