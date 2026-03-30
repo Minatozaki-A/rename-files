@@ -12,7 +12,6 @@ def clean_name(name : str):
     clean = re.sub(r'[^\w\s]', ' ', without_accents)
     clean = re.sub(r'\s+', ' ', clean).lower().strip()
     final_name = re.sub(r'[\s_-]+', '-', clean)
-    # re.sub(r'-+', '-', clean.replace(" ", "-").replace("_", "-"))
     return final_name
 
 def clean_file_name(path_file : Path):
