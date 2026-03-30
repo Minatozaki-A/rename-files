@@ -16,18 +16,25 @@ El desarrollo se centra en el uso de librerías estándar de Python para mantene
 1. **Pathlib:** Se utiliza para la manipulación de rutas de archivos mediante objetos, garantizando que el script funcione correctamente tanto en sistemas basados en Unix como en Windows.
 2. **Shutil:** Se emplea para realizar las operaciones de movimiento de archivos entre directorios de forma segura.
 3. **Diccionarios de mapeo:** La lógica de organización depende de dos diccionarios principales: uno para agrupar extensiones en categorías y otro para asignar esas categorías a rutas físicas del sistema.
+4. **Sistema de Archivos Btrfs:** El sistema fue probado y programado específicamente para el sistema de archivos Btrfs. Esto permite aprovechar sus características nativas como *Case Sensitivity* (distinción entre mayúsculas y minúsculas) y *Copy-on-Write (CoW)* para un manejo de archivos más eficiente y seguro.
 
 ## Requisitos
 
-* Python 3.6 o superior.
-* No se requieren dependencias externas adicionales.
+* **Python:** 3.13 o superior.
+* **Dependencias:** Requiere la librería `psutil`. Las dependencias del proyecto se gestionan mediante `uv`.
+* **Sistema de Archivos:** Se recomienda encarecidamente el uso del sistema de archivos **Btrfs** (el sistema fue programado y probado para este Filesystem).
 
 ## Instalación y uso
 
 1. Clonar este repositorio.
-2. Ejecutar el script principal:
+2. Sincronizar las dependencias usando `uv` (recomendado):
+   ```bash
+   uv sync
+   ```
+3. Ejecutar el script principal:
    ```bash
    python main.py
+   ```
 
 
 
