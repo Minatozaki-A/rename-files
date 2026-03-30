@@ -41,12 +41,13 @@ def resolve_name_file(path_file: Path) -> Path:
     if final_name.exists() and final_name.samefile(path_file):
         return final_name
 
-    if not final_name.exists():
-        return final_name
+    # if not final_name.exists():
+    #    return final_name
 
     counter = 1
-
+    name, suffix = final_name.stem, final_name.suffix
     temp_final = final_name
+
     while temp_final.exists():
 
         temp_final = path_file.parent / f"{name}-({counter}){suffix}"
