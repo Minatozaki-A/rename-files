@@ -20,20 +20,20 @@ def find_ssd_mount_point(label_ssd: str = None):
     for part in psutil.disk_partitions():
         mount_point = part.mountpoint.rstrip('/')
         if mount_point.endswith(label_ssd):
-            print(f"Name: {part.device}")
-            print(f"Mountpoint: {part.mountpoint}")
-            print(f"File System: {part.fstype}")
+            # print(f"Name: {part.device}")
+            # print(f"Mountpoint: {part.mountpoint}")
+            # print(f"File System: {part.fstype}")
             return Path(part.mountpoint)
     return None
 
 
 def resolve_name_file(path_file: Path) -> Path:
     new_name = clean_file_name(path_file)
+
     if not new_name:
         raise ValueError(f"new name is empty: {path_file}")
 
     final_name = path_file.parent / new_name
-    name, suffix = final_name.stem, final_name.suffix
 
     if  final_name.name == path_file.name:
         return final_name
