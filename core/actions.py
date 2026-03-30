@@ -41,9 +41,6 @@ def resolve_name_file(path_file: Path) -> Path:
     if final_name.exists() and final_name.samefile(path_file):
         return final_name
 
-    # if not final_name.exists():
-    #    return final_name
-
     counter = 1
     name, suffix = final_name.stem, final_name.suffix
     temp_final = final_name
@@ -58,6 +55,7 @@ def resolve_name_file(path_file: Path) -> Path:
 
 def resolve_name_directory(path_dir: Path):
     new_name = clean_directory_name(path_dir)
+
     if not new_name:
         raise ValueError(f"new name is empty: {path_dir}")
 

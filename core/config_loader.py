@@ -9,7 +9,7 @@ def get_cached_config_value(config_path: Path, key: str):
 
     if path_str not in _CONFIG_CACHE:
         if not config_path.exists():
-            _CONFIG_CACHE[path_str] = {}  # Evita re-intentar si no existe
+            _CONFIG_CACHE[path_str] = {}
             return None
     try:
         with open(config_path, 'r', encoding='utf-8') as f:
@@ -22,43 +22,37 @@ def get_cached_config_value(config_path: Path, key: str):
 
 
 def build_directory_tree(path_dir: Path, ignore_list: list) -> dict:
-    """Función recursiva para construir el diccionario de di and item.name not in ignore_dirrectorios."""
     tree = {}
     try:
-        # Se itera sobre el contenido del directorio actual
+
         for item in path_dir.iterdir():
             if item.name in ignore_list:
                 continue
 
             if item.is_dir():
-                # Si es un directorio, su valor es el resultado de explorarlo por dentro (recursión)
                 tree[item.name] = build_directory_tree(item, ignore_list)
+
             elif item.is_file():
-                # Si es un archivo, asignamos None o un string vacío.
                 tree[item.name] = None
+
     except PermissionError:
-        # Prevención de bloqueos al escanear carpetas del sistema sin permisos
         pass
 
     return tree
 
 
 def save_structure_to_config(config_path: Path, new_structure: dict):
-    """Carga el config.json actual, inyecta la estructura y guarda."""
     config_data = {}
 
-    # 1. Leer la configuración existente para no perder la clave "ignore"
     if config_path and config_path.exists():
         with open(config_path, 'r', encoding='utf-8') as f:
             try:
                 config_data = json.load(f)
             except json.JSONDecodeError:
-                pass  # Si el archivo está vacío o corrupto, empezamos de cero
+                pass
 
-    # 2. Actualizar el diccionario con la nueva estructura
     config_data.update(new_structure)
 
-    # 3. Sobrescribir el archivo JSON con el formato correcto
     if config_path:
         with open(config_path, 'w', encoding='utf-8') as f:
             json.dump(config_data, f, indent=4, ensure_ascii=False)
