@@ -1,5 +1,7 @@
 from pathlib import  Path
-from core.config_loader import get_cached_config_value, build_directory_tree, save_structure_to_config
+from core.config_loader import (get_cached_config_value,
+                                build_directory_tree,
+                                save_structure_to_config)
 from utils.text_utils import clean_directory_name
 
 
