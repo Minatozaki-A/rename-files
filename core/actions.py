@@ -1,7 +1,8 @@
 from pathlib import Path
 import psutil
 from core.config_loader import get_cached_config_value
-from utils.text_utils import clean_file_name, clean_directory_name
+from utils.text_utils import (clean_file_name,
+                            clean_directory_name)
 
 def _resolve_config(config_path: Path, key_config: str,
                     config_value: list | None) -> list:
@@ -99,7 +100,7 @@ def get_name_files(source_path: Path, config_path: Path,
 
 
 def get_name_directories(source_path: Path, config_path: Path,
-                        key: str, config_value: list):
+                        key: str, config_value: list = None):
 
     ignore_dir = _resolve_config(config_path,
                                 key, config_value)
