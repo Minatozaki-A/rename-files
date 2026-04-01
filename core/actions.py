@@ -14,8 +14,18 @@ def _resolve_config(config_path: Path, key_config: str,
         return get_cached_config_value(config_path, key_config) or []
     return []
 
+def _unique_path(base_path: Path)-> Path | None:
+    if not base_path.exists():
+        return base_path
+    stem, suffix = base_path.stem, base_path.suffix
+    for n in count(1):
+        candidate = base_path.parent / f"{stem}({n}){suffix}"
+        if not candidate.exists():
+            return candidate
+    return None
 
-def find_ssd_mount_point(label_ssd: str = None):
+
+def find_ssd_mount_point(label_ssd: str = None)-> Path | None:
     if not label_ssd:
         raise ValueError("label_ssd is empty")
 
