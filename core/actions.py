@@ -39,43 +39,27 @@ def find_ssd_mount_point(label_ssd: str = None)-> Path | None:
     return None
 
 
-def resolve_name_path(path_file: Path) -> Path:
+def resolve_name_path(base_path: Path) -> Path | None:
     new_name = ""
 
-    if path_file.is_dir():
-        new_name = clean_directory_name(path_file)
-    elif path_file.is_file():
-        new_name = clean_file_name(path_file)
+    if base_path.is_dir():
+        new_name = clean_directory_name(base_path)
+    elif base_path.is_file():
+        new_name = clean_file_name(base_path)
 
     if not new_name:
-        raise ValueError(f"new name is empty: {path_file}")
+        raise ValueError(f"new name is empty: {base_path}")
 
-    final_name = path_file.parent / new_name
+    final_name = base_path.parent / new_name
 
-    if  final_name.name == path_file.name:
+    if  final_name.name == base_path.name:
         return final_name
 
-    if final_name.exists() and final_name.samefile(path_file):
+    if final_name.exists() and final_name.samefile(base_path):
         return final_name
 
     return _unique_path(final_name)
 
-
-def resolve_name_directory(path_dir: Path)-> Path:
-    new_name = clean_directory_name(path_dir)
-
-    if not new_name:
-        raise ValueError(f"new name is empty: {path_dir}")
-
-    final_name = path_dir.parent / new_name
-
-    if final_name.name == path_dir.name:
-        return final_name
-
-    if final_name.exists() and final_name.samefile(path_dir):
-        return final_name
-
-    return _unique_path(final_name)
 
 def organize_for_depth_and_alphabetical(list_items)-> list:
     return sorted(list(list_items), key=lambda part: (-len(part.parts), part))
