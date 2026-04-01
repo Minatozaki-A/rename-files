@@ -21,11 +21,11 @@ def get_cached_config_value(config_path: Path, key: str):
     return _CONFIG_CACHE[path_str].get(key)
 
 
-def build_directory_tree(path_dir: Path, ignore_list: list) -> dict:
+def build_directory_tree(base_path: Path, ignore_list: list) -> dict:
     tree = {}
     try:
 
-        for item in path_dir.iterdir():
+        for item in base_path.iterdir():
             if item.name in ignore_list:
                 continue
 

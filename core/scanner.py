@@ -1,11 +1,13 @@
 from pathlib import  Path
-from core.config_loader import get_cached_config_value, build_directory_tree, save_structure_to_config
+from core.config_loader import (get_cached_config_value,
+                                build_directory_tree,
+                                save_structure_to_config)
 from utils.text_utils import clean_directory_name
 
 
-def scanner_structure_directories(path_directory: Path, config_path: Path = None, structure_path: Path = None):
-    if not path_directory.exists() or not path_directory.is_dir():
-        raise FileNotFoundError(f"La ruta no existe o no es un directorio: {path_directory}")
+def scanner_structure_directories(base_path: Path, config_path: Path = None, structure_path: Path = None):
+    if not base_path.exists() or not base_path.is_dir():
+        raise FileNotFoundError(f"La ruta no existe o no es un directorio: {base_path}")
 
     ignore_dir = []
     if config_path:
@@ -14,7 +16,7 @@ def scanner_structure_directories(path_directory: Path, config_path: Path = None
             ignore_dir = cached_ignore
 
     final_structure = {
-            clean_directory_name(path_directory): build_directory_tree(path_directory, ignore_dir)
+            clean_directory_name(base_path): build_directory_tree(base_path, ignore_dir)
     }
 
     if config_path:
