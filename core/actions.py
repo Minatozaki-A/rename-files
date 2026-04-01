@@ -39,8 +39,13 @@ def find_ssd_mount_point(label_ssd: str = None)-> Path | None:
     return None
 
 
-def resolve_name_file(path_file: Path) -> Path:
-    new_name = clean_file_name(path_file)
+def resolve_name_path(path_file: Path) -> Path:
+    new_name = ""
+
+    if path_file.is_dir():
+        new_name = clean_directory_name(path_file)
+    elif path_file.is_file():
+        new_name = clean_file_name(path_file)
 
     if not new_name:
         raise ValueError(f"new name is empty: {path_file}")
