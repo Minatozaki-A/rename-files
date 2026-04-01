@@ -3,10 +3,10 @@ from core.actions import (find_ssd_mount_point,
                         get_name_directories,
                         get_name_files,
                         organize_for_depth_and_alphabetical,
-                        resolve_name_file,
-                        resolve_name_directory)
+                        resolve_name_path)
 # from core.scanner import scanner_structure_directories
 from core.config_loader import get_cached_config_value
+
 
 def main():
 
@@ -24,16 +24,22 @@ def main():
     files = organize_for_depth_and_alphabetical(
         get_name_files(ssd_path, config_path, "ignore_directories", ignore_list))
 
-
-    for file in files:
-        print(f"{file}->\n{resolve_name_file(file)}")
-
     directories = organize_for_depth_and_alphabetical(
         get_name_directories(ssd_path, config_path, "ignore_directories", ignore_list))
 
-    for directory in directories:
-        print(f"{directory}->\n{resolve_name_directory(directory)}")
+    for file in files:
+        new_path_file = resolve_name_path(file)
+        if new_path_file and new_path_file != file:
+            print(f"{file}->\n{new_path_file}")
+            # file.rename(new_path_file)
 
+    
+
+    for directory in directories:
+        new_path_directory = resolve_name_path(directory)
+        if new_path_directory and new_path_directory != directory:
+            print(f"{new_path_directory}")
+            # directory.rename(new_path_directory)
 
 if __name__ == "__main__":
     main()
