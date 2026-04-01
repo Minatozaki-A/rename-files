@@ -70,15 +70,7 @@ def resolve_name_directory(path_dir: Path)-> Path:
     if final_name.exists() and final_name.samefile(path_dir):
         return final_name
 
-    counter = 1
-    temp_final = final_name
-
-    while temp_final.exists():
-
-        temp_final = path_dir.parent / f"{new_name}-({counter})"
-        counter += 1
-
-    return temp_final
+    return _unique_path(final_name)
 
 def organize_for_depth_and_alphabetical(list_items)-> list:
     return sorted(list(list_items), key=lambda part: (-len(part.parts), part))
