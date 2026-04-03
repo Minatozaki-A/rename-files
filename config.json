@@ -1,0 +1,12 @@
+{
+    "_comment_mount_point_label": "Etiqueta que identifica un disco de almacenamiento SSD en el sistema. Se usa para resolver rutas con psutil.",
+    "mount_point_label": "SSD",
+    "_comment_ignore": "Lista de nombres de carpetas que serán omitidas recursivamente durante el escaneo.",
+    "ignore": [
+        ".git",
+        "__pycache__",
+        "node_modules",
+        "build",
+        "dist"
+    ]
+}

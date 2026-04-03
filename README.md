@@ -12,18 +12,51 @@ Este proyecto es una herramienta para el escaneo, renombrado seguro de archivos 
     *   Soporte para listas de exclusión (ignorar ciertas carpetas) cargadas desde un archivo de configuración JSON.
     *   Cacheo de configuraciones (`config_loader.py`) para optimizar múltiples accesos de lectura.
     *   Guardado automático de la estructura escaneada en un archivo de configuración (`save_structure_to_config`).
-*   **Soporte de Almacenamiento SSD:**
-    *   `find_ssd_mount_point`: Utiliza la librería `psutil` para encontrar puntos de montaje específicos en discos basándose en etiquetas SSD.
+
+### Configuración Avanzada
+
+El sistema de escaneo se puede controlar a través del archivo `config.json`. A continuación un ejemplo típico de configuración para entornos de desarrollo:
+
+```json
+{
+    "_comment_mount_point_label": "Etiqueta que identifica un disco de almacenamiento SSD en el sistema. Se usa para resolver rutas.",
+    "mount_point_label": "SSD",
+    "_comment_ignore": "Lista de nombres de carpetas que el escáner omitirá recursivamente.",
+    "ignore": [
+        ".git",
+        "__pycache__",
+        "node_modules"
+    ]
+}
+```
+
+*   **Esquema del JSON**:
+    *   `mount_point_label`: Especifica la etiqueta del disco que el sistema intentará localizar como unidad de almacenamiento rápido SSD.
+    *   `ignore`: Un arreglo de strings con los nombres de las carpetas a omitir.
+*   **Gestión de Exclusiones**: Para añadir nuevas carpetas que no desees escanear (por ejemplo, entornos virtuales), simplemente añade su nombre al array de `ignore`. El escáner automáticamente saltará estas carpetas y no procesará su contenido de forma recursiva.
+
+### Detección de Dispositivos y Puntos de Montaje (psutil)
+
+El proyecto interactúa fuertemente con el sistema de archivos y hardware mediante la librería externa **psutil**.
+
+*   **`find_ssd_mount_point` (`core/actions.py`)**: Utiliza `psutil.disk_partitions()` para realizar una enumeración eficiente de las particiones del sistema.
+    *   **Lógica y Filtrado**: Itera sobre todas las particiones conectadas, y realiza una limpieza en las rutas (`rstrip('/')`). Finalmente, compara cada punto de montaje contra la etiqueta (`mount_point_label`) que configuramos, devolviendo la partición que finaliza con esta etiqueta.
+    *   **Retorno Tipado**: Aunque `psutil` retorna resultados como cadenas de texto convencionales (strings), esta función encapsula inmediatamente el valor dentro de un objeto `Path` (`pathlib`), asegurando la consistencia y mantenibilidad del uso de rutas en todo el proyecto.
+
+| Parámetro | Tipo | Descripción |
+| :--- | :--- | :--- |
+| `label_ssd` | `str` | La etiqueta del disco que deseamos encontrar. |
+| **Retorno** | `Path` / `None` | Un objeto `Path` del punto de montaje si se encuentra, o `None`. |
 
 ## Arquitectura y Entorno
 
 Este proyecto ha sido desarrollado con los siguientes requisitos en mente:
 
-*   **Python >= 3.13:** Utiliza las características más recientes de Python.
-*   **Gestor de Paquetes `uv`:** Las dependencias del proyecto se gestionan de manera ultrarrápida utilizando `uv`.
+*   **Python >= 3.13:** Utiliza las características más recientes de Python y validaciones rigurosas de tipo (Type Hinting) en todo el código fuente, mejorando el uso del IDE y la prevención de errores.
+*   **Gestor de Paquetes `uv`:** Las dependencias del proyecto se gestionan de manera ultrarrápida utilizando `uv`. La instalación y el aislamiento de dependencias se configuran de forma automatizada mediante el uso del archivo `uv.lock`, asegurando reproducibilidad determinista en sistemas operativos robustos como Fedora.
 *   **Librerías Estándar:** Se prioriza el uso de la biblioteca estándar, especialmente `pathlib` (para manejo avanzado de rutas multiplataforma) y `json` (para las estructuras de directorios y configuración).
 *   **`psutil`:** La única dependencia externa requerida (`psutil>=7.2.2`) utilizada para la enumeración de particiones y puntos de montaje.
-*   **Optimizado para Btrfs:** Este proyecto fue hecho y se ha probado exclusivamente en el sistema de archivos Btrfs para aprovechar sus características únicas.
+*   **Optimizado para Btrfs:** Aunque la lógica principal (como la detección en hardware mediante psutil o la gestión de rutas con pathlib) es netamente multiplataforma, el proyecto está validado de forma específica para sistemas de archivos Btrfs.
 
 ## Instalación y Uso
 

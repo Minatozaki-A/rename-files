@@ -15,6 +15,14 @@ def _resolve_config(config_path: Path, key_config: str,
     return []
 
 def _unique_path(base_path: Path)-> Path | None:
+    """Genera una ruta única añadiendo un sufijo numérico para evitar colisiones.
+
+    Args:
+        base_path (Path): La ruta deseada original.
+
+    Returns:
+        Path | None: La ruta única si se encuentra, o None si no hay colisión (es decir, el path base ya era válido).
+    """
     if not base_path.exists():
         return base_path
     stem, suffix = base_path.stem, base_path.suffix
@@ -40,6 +48,24 @@ def find_ssd_mount_point(label_ssd: str = None)-> Path | None:
 
 
 def resolve_name_path(base_path: Path) -> Path | None:
+    """Resuelve y limpia el nombre para un archivo o directorio.
+
+    Detecta si la ruta proporcionada (`base_path`) corresponde a un directorio o a un
+    archivo. Dependiendo del tipo, aplica la limpieza correspondiente (`clean_directory_name`
+    o `clean_file_name`). Posteriormente, maneja la resolución de colisiones: si el nuevo
+    nombre limpio ya existe en el directorio destino, delega en la función `_unique_path`
+    para adjuntar un sufijo numérico incremental (por ejemplo, `archivo(1).txt`) garantizando
+    que la ruta final sea única.
+
+    Args:
+        base_path (Path): La ruta original a resolver y renombrar.
+
+    Returns:
+        Path | None: La ruta resuelta con el nombre limpio y único, o None si hay error.
+
+    Raises:
+        ValueError: Si el nombre resultante después de la limpieza está vacío.
+    """
     new_name = ""
 
     if base_path.is_dir():
