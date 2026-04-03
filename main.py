@@ -1,4 +1,5 @@
 from pathlib import Path
+import argparse
 from core.actions import (find_ssd_mount_point,
                         get_name_directories,
                         get_name_files,
@@ -9,6 +10,11 @@ from core.config_loader import get_cached_config_value
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Rename your files and directories")
+    parser.add_argument('--run', action='store_true', help='Run the script')
+    args = parser.parse_args()
+
+    dry_run = not args.run
 
     config_path = Path.cwd() / "config.json"
     mount_label = get_cached_config_value(config_path, "mount_point_label")
@@ -30,16 +36,22 @@ def main():
     for file in files:
         new_path_file = resolve_name_path(file)
         if new_path_file and new_path_file != file:
-            print(f"{file}->\n{new_path_file}")
-            # file.rename(new_path_file)
+            if dry_run:
+                print(f"[Simulation]:{file.name} -> {new_path_file.name}")
+            else:
+                print(f"[Execution]:{file.name} -> {new_path_file.name}")
+                file.rename(new_path_file)
 
     
 
     for directory in directories:
         new_path_directory = resolve_name_path(directory)
         if new_path_directory and new_path_directory != directory:
-            print(f"{new_path_directory}")
-            # directory.rename(new_path_directory)
+            if dry_run:
+                print(f"{directory.name} -> {new_path_directory.name}")
+            else:
+                print(f"[Execution]:{directory.name} -> {new_path_directory.name}")
+                directory.rename(new_path_directory)
 
 if __name__ == "__main__":
     main()
