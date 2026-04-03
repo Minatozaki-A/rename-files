@@ -36,16 +36,22 @@ def main():
     for file in files:
         new_path_file = resolve_name_path(file)
         if new_path_file and new_path_file != file:
-            print(f"{file}->\n{new_path_file}")
-            # file.rename(new_path_file)
+            if dry_run:
+                print(f"[Simulation]:{file.name} -> {new_path_file.name}")
+            else:
+                print(f"[Execution]:{file.name} -> {new_path_file.name}")
+                file.rename(new_path_file)
 
     
 
     for directory in directories:
         new_path_directory = resolve_name_path(directory)
         if new_path_directory and new_path_directory != directory:
-            print(f"{new_path_directory}")
-            # directory.rename(new_path_directory)
+            if dry_run:
+                print(f"{directory.name} -> {new_path_directory.name}")
+            else:
+                print(f"[Execution]:{directory.name} -> {new_path_directory.name}")
+                directory.rename(new_path_directory)
 
 if __name__ == "__main__":
     main()
