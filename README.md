@@ -5,7 +5,7 @@ Este proyecto es una herramienta para el escaneo, renombrado seguro de archivos 
 ## Características Principales
 
 *   **Renombrado Seguro y Limpieza:**
-    *   `resolve_name_file` y `resolve_name_directory`: Renombra archivos y carpetas eliminando caracteres especiales, tildes (usando normalización Unicode) y espacios extra, convirtiéndolos en formatos uniformes (en minúsculas, separados por guiones).
+    *   `resolve_name_path`: Renombra archivos y carpetas eliminando caracteres especiales, tildes (usando normalización Unicode) y espacios extra, convirtiéndolos en formatos uniformes (en minúsculas, separados por guiones).
     *   Gestión automática de colisiones agregando sufijos numéricos (ej: `nombre-(1).txt`) para evitar sobrescribir archivos existentes.
 *   **Escaneo y Generación de Estructuras (JSON):**
     *   Escanea de forma recursiva un directorio y genera una representación en árbol (diccionario) de toda su estructura.
