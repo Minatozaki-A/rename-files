@@ -10,6 +10,11 @@ from core.config_loader import get_cached_config_value
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Rename your files and directories")
+    parser.add_argument('--run', action='store_true', help='Run the script')
+    args = parser.parse_args()
+
+    dry_run = not args.run
 
     config_path = Path.cwd() / "config.json"
     mount_label = get_cached_config_value(config_path, "mount_point_label")
