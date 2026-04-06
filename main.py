@@ -4,7 +4,7 @@ from core.actions import (find_ssd_mount_point,
                         get_name_directories,
                         get_name_files,
                         organize_for_depth_and_alphabetical,
-                        resolve_name_path)
+                        rename_files_and_directories)
 # from core.scanner import scanner_structure_directories
 from core.config_loader import get_cached_config_value
 
