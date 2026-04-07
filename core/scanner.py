@@ -1,7 +1,7 @@
 from pathlib import  Path
 from core.config_loader import (get_cached_config_value,
                                 build_directory_tree,
-                                save_structure_to_config)
+                                save_structure_directories)
 from utils.text_utils import clean_directory_name
 
 
@@ -20,5 +20,5 @@ def scanner_structure_directories(base_path: Path, config_path: Path = None, str
     }
 
     if config_path:
-        save_structure_to_config(structure_path, final_structure)
+        save_structure_directories(structure_path, final_structure)
 
