@@ -8,16 +8,6 @@ from core.actions import (find_ssd_mount_point,
 # from core.scanner import scanner_structure_directories
 from core.config_loader import get_cached_config_value
 
-def rename_files_and_directories(list_items: list, is_dry_run: bool):
-    for item in list_items:
-        new_path_file = resolve_name_path(item)
-        if new_path_file and new_path_file != item:
-            if is_dry_run:
-                print(f"[Simulation]:{item.name} -> {new_path_file.name}")
-            else:
-                print(f"[Execution]:{item.name} -> {new_path_file.name}")
-                item.rename(new_path_file)
-
 
 def main():
     parser = argparse.ArgumentParser(description="Rename your files and directories")
