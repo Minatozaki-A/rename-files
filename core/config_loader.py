@@ -23,36 +23,36 @@ def get_cached_config_value(config_path: Path, key: str):
 
 def build_directory_tree(base_path: Path, ignore_list: list) -> dict:
     tree = {}
-    try:
+    #try:
 
-        for item in base_path.iterdir():
-            if item.name in ignore_list:
-                continue
-
+    for item in base_path.iterdir():
+        if item.name in ignore_list:
+            continue
+        try:
             if item.is_dir():
                 tree[item.name] = build_directory_tree(item, ignore_list)
 
             elif item.is_file():
                 tree[item.name] = None
 
-    except PermissionError:
-        pass
+        except PermissionError:
+                tree[item.name] = None
 
     return tree
 
 
-def save_structure_to_config(config_path: Path, new_structure: dict):
-    config_data = {}
+def save_structure_directories(config_path: Path, new_structure: dict):
+    structure_data = {}
 
     if config_path and config_path.exists():
         with open(config_path, 'r', encoding='utf-8') as f:
             try:
-                config_data = json.load(f)
+                structure_data = json.load(f)
             except json.JSONDecodeError:
-                pass
+                return
 
-    config_data.update(new_structure)
+    structure_data.update(new_structure)
 
     if config_path:
         with open(config_path, 'w', encoding='utf-8') as f:
-            json.dump(config_data, f, indent=4, ensure_ascii=False)
+            json.dump(structure_data, f, indent=4, ensure_ascii=False)

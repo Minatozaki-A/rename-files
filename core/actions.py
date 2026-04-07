@@ -123,3 +123,13 @@ def get_name_directories(source_path: Path, config_path: Path,
 
             yield from get_name_directories(item, config_path,
                                             key, ignore_dir)
+
+def rename_files_and_directories(list_items: list, is_dry_run: bool):
+    for item in list_items:
+        new_path_file = resolve_name_path(item)
+        if new_path_file and new_path_file != item:
+            if is_dry_run:
+                print(f"[Simulation]:{item.name} -> {new_path_file.name}")
+            else:
+                print(f"[Execution]:{item.name} -> {new_path_file.name}")
+                item.rename(new_path_file)
