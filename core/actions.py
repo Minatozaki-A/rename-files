@@ -119,23 +119,36 @@ def get_name_directories(source_path: Path, config_path: Path,
 
     ignore_dir = _resolve_config(config_path,
                                 key, config_value)
+    try:
+        for item in source_path.iterdir():
 
-    for item in source_path.iterdir():
-        if item.is_dir():
-            if item.name in ignore_dir:
-                continue
+            if item.is_dir():
+                if item.name in ignore_dir:
+                    continue
 
-            yield item
+                yield item
 
-            yield from get_name_directories(item, config_path,
+                yield from get_name_directories(item, config_path,
                                             key, ignore_dir)
+    except PermissionError:
+        logging.error("Permission denied accessing: %s",
+                        source_path)
 
 def rename_files_and_directories(list_items: list, is_dry_run: bool):
     for item in list_items:
-        new_path_file = resolve_name_path(item)
-        if new_path_file and new_path_file != item:
-            if is_dry_run:
-                print(f"[Simulation]:{item.name} -> {new_path_file.name}")
-            else:
-                print(f"[Execution]:{item.name} -> {new_path_file.name}")
-                item.rename(new_path_file)
+        try:
+            new_path_file = resolve_name_path(item)
+            if new_path_file and new_path_file != item:
+                if is_dry_run:
+                    print(f"[Simulation]:{item.name} -> {new_path_file.name}")
+                else:
+                    try:
+                        logging.info("Renaming: %s -> %s", item.name, new_path_file.name)
+                        item.rename(new_path_file)
+                    except PermissionError:
+                        logging.error("Permission denied renaming: %s -> %s", item.name, new_path_file.name)
+
+        except PermissionError:
+            logging.error("Permission denied accessing: %s", item)
+        except OSError as e:
+            logging.error("Error de sistema al procesar %s: %s", item, e)
