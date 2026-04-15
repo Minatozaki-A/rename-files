@@ -17,6 +17,7 @@ def get_cached_config_value(config_path: Path, key: str):
             _CONFIG_CACHE[path_str] = json.load(f)
 
     except (json.JSONDecodeError, PermissionError):
+        logging.error("Error reading config file: %s", config_path)
         _CONFIG_CACHE[path_str] = {}
 
     return _CONFIG_CACHE[path_str].get(key)
