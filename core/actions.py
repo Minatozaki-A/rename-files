@@ -97,16 +97,21 @@ def get_name_files(source_path: Path, config_path: Path,
 
     ignore_dir = _resolve_config(config_path, key, config_value)
 
-    for item in source_path.iterdir():
-        if item.is_dir():
-            if item.name in ignore_dir:
-                continue
+    try:
+        for item in source_path.iterdir():
 
-            yield from get_name_files(item, config_path,
+            if item.is_dir():
+                if item.name in ignore_dir:
+                    continue
+
+                yield from get_name_files(item, config_path,
                                     key, ignore_dir)
 
-        elif item.is_file():
-            yield item
+            elif item.is_file():
+                yield item
+    except PermissionError:
+            logging.error("Permission denied accessing: %s",
+                            source_path)
 
 
 def get_name_directories(source_path: Path, config_path: Path,
