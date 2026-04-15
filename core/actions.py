@@ -41,9 +41,9 @@ def find_ssd_mount_point(label_ssd: str = None)-> Path | None:
     for part in psutil.disk_partitions():
         mount_point = part.mountpoint.rstrip('/')
         if mount_point.endswith(label_ssd):
-            # print(f"Name: {part.device}")
-            # print(f"Mountpoint: {part.mountpoint}")
-            # print(f"File System: {part.fstype}")
+            print(f"Name: {part.device}")
+            print(f"Mountpoint: {part.mountpoint}")
+            print(f"File System: {part.fstype}")
             return Path(part.mountpoint)
     return None
 
