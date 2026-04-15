@@ -1,5 +1,6 @@
 from pathlib import Path
 import psutil
+import logging
 from itertools import count
 from core.config_loader import get_cached_config_value
 from utils.text_utils import (clean_file_name,
