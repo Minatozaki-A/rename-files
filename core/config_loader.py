@@ -1,4 +1,5 @@
 import json
+import logging
 from pathlib import Path
 from typing import Dict
 
@@ -16,6 +17,7 @@ def get_cached_config_value(config_path: Path, key: str):
             _CONFIG_CACHE[path_str] = json.load(f)
 
     except (json.JSONDecodeError, PermissionError):
+        logging.error("Error reading config file: %s", config_path)
         _CONFIG_CACHE[path_str] = {}
 
     return _CONFIG_CACHE[path_str].get(key)
@@ -23,20 +25,19 @@ def get_cached_config_value(config_path: Path, key: str):
 
 def build_directory_tree(base_path: Path, ignore_list: list) -> dict:
     tree = {}
-    #try:
+    try:
+        for item in base_path.iterdir():
+            if item.name in ignore_list:
+                continue
 
-    for item in base_path.iterdir():
-        if item.name in ignore_list:
-            continue
-        try:
             if item.is_dir():
                 tree[item.name] = build_directory_tree(item, ignore_list)
 
             elif item.is_file():
                 tree[item.name] = None
 
-        except PermissionError:
-                tree[item.name] = None
+    except PermissionError:
+                logging.error("Permission denied accessing: %s", base_path)
 
     return tree
 

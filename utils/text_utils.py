@@ -17,19 +17,20 @@ def clean_name(name : str) -> str:
 
     Returns:
         str: El nombre limpio, normalizado y formateado con guiones.
-    """
+"""
     clean = udd.normalize('NFKD', name)
+    without_accents = "".join(c for c in clean if udd.category(c) != 'Mn')
 
-    without_accents = "".join(
-        c for c in clean if udd.category(c) != 'Mn'
-    )
+    clean = re.sub(r'copy-of', '', without_accents, flags=re.IGNORECASE)
 
-    clean = re.sub(r'[^\w\s]', ' ', without_accents)
+    clean = re.sub(r'[^\w\s]', ' ', clean)
+
     clean = re.sub(r'\s+', ' ', clean).lower().strip()
+
     final_name = re.sub(r'[\s_-]+', '-', clean)
     return final_name
 
-def clean_file_name(path_file : Path) -> str:
+def clean_file_name(path_file: Path) -> str:
     """Genera un nombre de archivo limpio preservando su extensión.
 
     Args:

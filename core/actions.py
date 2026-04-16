@@ -1,5 +1,6 @@
 from pathlib import Path
 import psutil
+import logging
 from itertools import count
 from core.config_loader import get_cached_config_value
 from utils.text_utils import (clean_file_name,
@@ -40,9 +41,9 @@ def find_ssd_mount_point(label_ssd: str = None)-> Path | None:
     for part in psutil.disk_partitions():
         mount_point = part.mountpoint.rstrip('/')
         if mount_point.endswith(label_ssd):
-            # print(f"Name: {part.device}")
-            # print(f"Mountpoint: {part.mountpoint}")
-            # print(f"File System: {part.fstype}")
+            print(f"Name: {part.device}")
+            print(f"Mountpoint: {part.mountpoint}")
+            print(f"File System: {part.fstype}")
             return Path(part.mountpoint)
     return None
 
@@ -96,16 +97,21 @@ def get_name_files(source_path: Path, config_path: Path,
 
     ignore_dir = _resolve_config(config_path, key, config_value)
 
-    for item in source_path.iterdir():
-        if item.is_dir():
-            if item.name in ignore_dir:
-                continue
+    try:
+        for item in source_path.iterdir():
 
-            yield from get_name_files(item, config_path,
+            if item.is_dir():
+                if item.name in ignore_dir:
+                    continue
+
+                yield from get_name_files(item, config_path,
                                     key, ignore_dir)
 
-        elif item.is_file():
-            yield item
+            elif item.is_file():
+                yield item
+    except PermissionError:
+            logging.error("Permission denied accessing: %s",
+                            source_path)
 
 
 def get_name_directories(source_path: Path, config_path: Path,
@@ -113,23 +119,36 @@ def get_name_directories(source_path: Path, config_path: Path,
 
     ignore_dir = _resolve_config(config_path,
                                 key, config_value)
+    try:
+        for item in source_path.iterdir():
 
-    for item in source_path.iterdir():
-        if item.is_dir():
-            if item.name in ignore_dir:
-                continue
+            if item.is_dir():
+                if item.name in ignore_dir:
+                    continue
 
-            yield item
+                yield item
 
-            yield from get_name_directories(item, config_path,
+                yield from get_name_directories(item, config_path,
                                             key, ignore_dir)
+    except PermissionError:
+        logging.error("Permission denied accessing: %s",
+                        source_path)
 
 def rename_files_and_directories(list_items: list, is_dry_run: bool):
     for item in list_items:
-        new_path_file = resolve_name_path(item)
-        if new_path_file and new_path_file != item:
-            if is_dry_run:
-                print(f"[Simulation]:{item.name} -> {new_path_file.name}")
-            else:
-                print(f"[Execution]:{item.name} -> {new_path_file.name}")
-                item.rename(new_path_file)
+        try:
+            new_path_file = resolve_name_path(item)
+            if new_path_file and new_path_file != item:
+                if is_dry_run:
+                    print(f"[Simulation]:{item.name} -> {new_path_file.name}")
+                else:
+                    try:
+                        logging.info("Renaming: %s -> %s", item.name, new_path_file.name)
+                        item.rename(new_path_file)
+                    except PermissionError:
+                        logging.error("Permission denied renaming: %s -> %s", item.name, new_path_file.name)
+
+        except PermissionError:
+            logging.error("Permission denied accessing: %s", item)
+        except OSError as e:
+            logging.error("Error de sistema al procesar %s: %s", item, e)
