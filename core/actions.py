@@ -41,8 +41,9 @@ def find_ssd_mount_point(label_ssd: str = None)-> Path | None:
     for part in psutil.disk_partitions():
         mount_point = part.mountpoint.rstrip('/')
         if mount_point.endswith(label_ssd):
-            logging.info("SSD found — device: %s | mountpoint: %s | filesystem: %s",
-                         part.device, part.mountpoint, part.fstype)
+            print(f"Name: {part.device}")
+            print(f"Mountpoint: {part.mountpoint}")
+            print(f"File System: {part.fstype}")
             return Path(part.mountpoint)
     return None
 
@@ -139,10 +140,10 @@ def rename_files_and_directories(list_items: list, is_dry_run: bool):
             new_path_file = resolve_name_path(item)
             if new_path_file and new_path_file != item:
                 if is_dry_run:
-                    logging.info("[Dry-run] %s -> %s", item.name, new_path_file.name)
+                    print(f"[Simulation]:{item.name} -> {new_path_file.name}")
                 else:
                     try:
-                        logging.info("Renamed: %s -> %s", item.name, new_path_file.name)
+                        logging.info("Renaming: %s -> %s", item.name, new_path_file.name)
                         item.rename(new_path_file)
                     except PermissionError:
                         logging.error("Permission denied renaming: %s -> %s", item.name, new_path_file.name)
@@ -150,4 +151,4 @@ def rename_files_and_directories(list_items: list, is_dry_run: bool):
         except PermissionError:
             logging.error("Permission denied accessing: %s", item)
         except OSError as e:
-            logging.error("OS error while processing '%s': %s", item, e)
+            logging.error("Error de sistema al procesar %s: %s", item, e)
