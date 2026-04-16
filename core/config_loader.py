@@ -16,8 +16,10 @@ def get_cached_config_value(config_path: Path, key: str):
         with open(config_path, 'r', encoding='utf-8') as f:
             _CONFIG_CACHE[path_str] = json.load(f)
 
-    except (json.JSONDecodeError, PermissionError):
-        logging.error("Error reading config file: %s", config_path)
+    except json.JSONDecodeError:
+        logging.error("Invalid JSON in config file: %s", config_path)
+    except PermissionError:
+        logging.error("Permission denied reading config file: %s", config_path)
         _CONFIG_CACHE[path_str] = {}
 
     return _CONFIG_CACHE[path_str].get(key)
@@ -37,7 +39,7 @@ def build_directory_tree(base_path: Path, ignore_list: list) -> dict:
                 tree[item.name] = None
 
     except PermissionError:
-                logging.error("Permission denied accessing: %s", base_path)
+        logging.error("Permission denied — cannot read directory: %s", base_path)
 
     return tree
 
@@ -50,6 +52,7 @@ def save_structure_directories(config_path: Path, new_structure: dict):
             try:
                 structure_data = json.load(f)
             except json.JSONDecodeError:
+                logging.error("Invalid JSON in structure file, skipping update: %s", config_path)
                 return
 
     structure_data.update(new_structure)
@@ -57,3 +60,4 @@ def save_structure_directories(config_path: Path, new_structure: dict):
     if config_path:
         with open(config_path, 'w', encoding='utf-8') as f:
             json.dump(structure_data, f, indent=4, ensure_ascii=False)
+        logging.info("Directory structure saved to: %s", config_path)

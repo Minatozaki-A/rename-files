@@ -1,5 +1,6 @@
 from pathlib import Path
 import argparse
+import logging
 from core.actions import (find_ssd_mount_point,
                         get_name_directories,
                         get_name_files,
@@ -10,6 +11,12 @@ from core.config_loader import get_cached_config_value
 
 
 def main():
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(levelname)s] %(message)s",
+        datefmt="%H:%M:%S"
+    )
+
     parser = argparse.ArgumentParser(description="Rename your files and directories")
     parser.add_argument('--run', action='store_true', help='Run the script')
     args = parser.parse_args()
@@ -23,7 +30,7 @@ def main():
     ssd_path = find_ssd_mount_point(mount_label)
 
     if not ssd_path:
-        print(f"Error: Drive with label not found: {mount_label}")
+        logging.error("Drive with label '%s' not found", mount_label)
         return
 
 
